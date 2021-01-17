@@ -1,0 +1,33 @@
+﻿
+<div class="categories-list__wrapper">
+
+    <div class="category-item__wrapper category-item__wrapper--newest">
+
+        <CategoryItemHeader Title=@categoryTitle Type=@categoryType @bind-CollapsedDetails=CollapseDetails />
+
+        <div class="category-item__details @detailsCssClass">
+
+            <table class="category-item__informations">
+                @foreach (var information in Informations)
+                {
+                    <NewestInformationItem Information=@information />
+                }
+            </table>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public NewestInformation[] Informations { get; set; }
+    [Parameter]
+    public bool CollapseDetails { get; set; }
+
+    private string categoryTitle => "Komunikaty z ostatniego tygodnia";
+    private CategoryType categoryType => CategoryType.Newest;
+
+
+    private string detailsCssClass => CollapseDetails ? "category-item__details--collapsed" : null;
+
+}

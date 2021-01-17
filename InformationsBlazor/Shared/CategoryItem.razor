@@ -1,0 +1,38 @@
+﻿
+
+<div class="category-item__wrapper @wrapperCssClass">
+
+    <CategoryItemHeader Title=@Category.Title Type=@Category.Type @bind-CollapsedDetails=CollapseDetails/>
+
+    <div class="category-item__details @detailsCssClass">
+
+        <table class="category-item__informations">
+            @foreach (var information in Category.Informations)
+            {
+                <InformationItem Information=@information CategoryType=@Category.Type />
+            }
+        </table>
+
+        @if (Category.SubCategories != null)
+        {
+            @foreach (var subCategory in Category.SubCategories)
+            {
+                <div class="category-item__subcategory">
+                    <CategoryItem Category=@subCategory />
+                </div>
+            }
+        }
+    </div>
+
+</div>
+
+@code {
+    [Parameter]
+    public Category Category { get; set; }
+    [Parameter]
+    public bool CollapseDetails { get; set; }
+
+    private string wrapperCssClass => Category.Type == CategoryType.Newest ? $"category-item__wrapper--newest" : "";
+
+    private string detailsCssClass => CollapseDetails ? "category-item__details--collapsed" : null;
+}

@@ -1,0 +1,26 @@
+﻿
+<tr class="information-item__row information-item__row--newest">
+
+    <td class="information-item__date-item">
+        @Information.Date.ToShortDateString()
+    </td>
+
+    <td class="information-item__title-item">
+        <a href=@Information.Url target="_blank" rel="noopener">@title <span class="information-item__title-item--sufix">[@categoryName]</span></a>
+    </td>
+
+    <td class="information-item__seasons-item">
+        @seasons
+    </td>
+
+</tr>
+
+
+@code {
+    [Parameter]
+    public NewestInformation Information { get; set; }
+
+    private MarkupString title => (MarkupString)Information?.Title;
+    private MarkupString categoryName => (MarkupString)Information?.CategoryName;
+    private MarkupString seasons => (MarkupString)Information?.Seasons;
+}

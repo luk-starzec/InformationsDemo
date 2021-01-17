@@ -1,0 +1,1 @@
+﻿window.jsfunction = { focusElement: function (className) { const element = document.getElementsByClassName(className); element[0].focus(); } }

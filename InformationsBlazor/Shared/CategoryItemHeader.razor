@@ -1,0 +1,36 @@
+﻿
+<div class="category-header__wrapper @wrapperCssClass">
+
+    <div class="category-header__title">@title</div>
+
+    <button class="category-header__button @buttonCssClass" @onclick="ToggleCollapsedDetails">
+        <i class="fas fa-chevron-down" />
+    </button>
+
+</div>
+
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+    [Parameter]
+    public CategoryType Type { get; set; }
+    [Parameter]
+    public bool CollapsedDetails { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> CollapsedDetailsChanged { get; set; }
+
+    private MarkupString title => (MarkupString)Title;
+
+    private string wrapperCssClass => $"category-header__wrapper--{Type.ToString().ToLower()}";
+    private string buttonCssClass => CollapsedDetails ? $"category-header__button--collapsed" : null;
+
+
+    private Task ToggleCollapsedDetails()
+    {
+        CollapsedDetails = !CollapsedDetails;
+
+        return CollapsedDetailsChanged.InvokeAsync(CollapsedDetails);
+    }
+}

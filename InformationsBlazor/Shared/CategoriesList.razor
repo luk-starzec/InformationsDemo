@@ -1,0 +1,14 @@
+﻿
+<div class="categories-list__wrapper">
+
+    @foreach (var category in Categories)
+    {
+        <CategoryItem Category=@category />
+    }
+
+</div>
+
+@code {
+    [Parameter]
+    public Category[] Categories { get; set; }
+}

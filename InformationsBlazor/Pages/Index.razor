@@ -1,0 +1,91 @@
+﻿@page "/"
+
+@using InformationsBlazor.Data
+
+@inject InformationsService InformationsService
+@inject IJSRuntime js
+
+<div class="informations-page__wrapper">
+
+    <TopPanel @bind-SearchText=@SearchText @bind-Sorting=@Sorting />
+
+    @if (filteredNewestInformations?.Any() == true)
+    {
+        <NewestCategoryItem Informations=@filteredNewestInformations />
+    }
+
+    @if (categories == null)
+    {
+        <p>Wczytuję...</p>
+    }
+    else
+    {
+        if (filteredCategories?.Any() == true)
+        {
+            <CategoriesList Categories=@filteredCategories />
+        }
+    }
+
+</div>
+
+@code {
+
+    private NewestInformation[] newestInformations;
+    private NewestInformation[] filteredNewestInformations;
+
+    private Category[] categories;
+    private Category[] filteredCategories;
+
+    private string searchText;
+    private string SearchText
+    {
+        get => searchText;
+        set
+        {
+            searchText = value;
+            Filter();
+        }
+    }
+    private SortingType sorting = SortingType.Alphabetical;
+    private SortingType Sorting
+    {
+        get => sorting;
+        set
+        {
+            sorting = value;
+            Filter();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        newestInformations = await InformationsService.GetNewestInformationsAsync();
+        categories = await InformationsService.GetCategoriesAsync();
+
+        Filter();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await FocusSearchBox();
+    }
+
+    private void Filter()
+    {
+        var search = SearchHelper.NormalizeText(searchText);
+
+        var tempNewest = SearchHelper.FilterNewestInformations(newestInformations, search);
+        tempNewest = SearchHelper.SortNewestInformations(tempNewest, sorting);
+        filteredNewestInformations = SearchHelper.HighlightSearch(tempNewest, search);
+
+        var tempCategories = SearchHelper.FilterCategories(categories, search);
+        tempCategories = SearchHelper.SortCategoriesInformations(tempCategories, sorting);
+        filteredCategories = SearchHelper.HighlightSearch(tempCategories, search);
+    }
+
+    public async Task FocusSearchBox()
+    {
+        await js.InvokeVoidAsync("jsfunction.focusElement", "top-panel__search-input--js");
+    }
+}

@@ -1,0 +1,58 @@
+﻿
+<div class="top-panel__wrapper">
+
+    <div class="top-panel__search-wrapper">
+        <i class="fas fa-search" />
+        <input type="text" @oninput="OnSearchChanged" class="top-panel__search-input top-panel__search-input--js" placeholder="wyszukaj">
+    </div>
+
+    <div class="top-panel__sort-wrapper">
+        sortuj
+        <label class="top-panel__sort-dropdown">
+            <select class="top-panel__sort-dropdown--select" @bind=@Sorting>
+                @foreach (var sortingType in sortingTypes)
+                {
+                    <option value=@sortingType>@sortingType.Description()</option>
+                }
+            </select>
+        </label>
+    </div>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public string SearchText { get; set; }
+
+    [Parameter]
+    public EventCallback<string> SearchTextChanged { get; set; }
+
+    private SortingType sorting;
+    [Parameter]
+    public SortingType Sorting
+    {
+        get => sorting;
+        set
+        {
+            if (sorting == value)
+                return;
+            sorting = value;
+            SortingChanged.InvokeAsync(sorting);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<SortingType> SortingChanged { get; set; }
+
+
+    private void OnSearchChanged(ChangeEventArgs e)
+    {
+        var search = e.Value.ToString();
+        SearchText = search;
+        SearchTextChanged.InvokeAsync(search);
+    }
+
+    private SortingType[] sortingTypes => Enum.GetValues(typeof(SortingType)).Cast<SortingType>().ToArray();
+
+}
