@@ -1,11 +1,21 @@
+using ApiHelpers;
+using HealthChecks.UI.Client;
+using InformationsApi.Repo;
+using InformationsApi.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Exceptions;
+using Serilog.Sinks.Elasticsearch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +25,8 @@ namespace InformationsApi
 {
     public class Startup
     {
+        readonly string SwaggerApiName = "Informations API";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -22,14 +34,26 @@ namespace InformationsApi
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            var seasonsApiUrl = Environment.GetEnvironmentVariable("SeasonsApiUrl");
+            seasonsApiUrl = "https://localhost:44362/";
+            services
+                .AddSingleton<ISeasonsService, SeasonsService>(s => new SeasonsService(seasonsApiUrl))
+                .AddSingleton<IInformationsRepo, InformationsRepo>()
+                .AddSingleton<IInformationsService, InformationsService>();
+
+            ConfigureLogger();
+
+            services
+                .AddCustomVersioning()
+                .AddCustomSwagger(SwaggerApiName)
+                .AddHealthChecks();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -46,6 +70,23 @@ namespace InformationsApi
             {
                 endpoints.MapControllers();
             });
+
+            loggerFactory.AddSerilog();
+
+            app.UseCustomSwagger(SwaggerApiName, provider);
+
+            app.UseHealthChecks("/hc", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
+        }
+
+
+        private void ConfigureLogger()
+        {
+            var elasticUrl = Environment.GetEnvironmentVariable("ElasticUrl");
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .Enrich.WithExceptionDetails()
+                //.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUrl)) { AutoRegisterTemplate = true, })
+                .CreateLogger();
         }
     }
 }

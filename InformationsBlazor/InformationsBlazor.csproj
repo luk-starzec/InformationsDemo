@@ -26,4 +26,8 @@
     <None Include="compilerconfig.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\InformationsApiClient\InformationsApiClient.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,5 @@
 ﻿using InformationsBlazor.Models;
-using KomunikatyGlobalne.Klient;
+using InformationsApiClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,66 +37,63 @@ namespace InformationsBlazor.Data
         {
             //return new Category[0];
 
-            var komunikaty = await ListaKomunikatow();
+            var informations = await GetInformations();
 
-            var kategorie = komunikaty.GroupBy(r => r.Kategoria.KategoriaId).Select(r => r.First().Kategoria).ToArray();
+            var categories = informations.GroupBy(r => r.Category.CategoryId).Select(r => r.First().Category).ToArray();
 
-            var categories = new List<Category>();
-            foreach (var kategoria in kategorie)
+            var result = new List<Category>();
+            foreach (var category in categories)
             {
-                var kategoriaId = kategoria.KategoriaId ?? 0;
-
-                var podkategorie = komunikaty
-                    .Where(r => r.Kategoria.KategoriaId == kategoriaId)
-                    .Where(r => r.Podkategoria != null)
-                    .GroupBy(r => r.Podkategoria.KategoriaId)
-                    .Select(r => r.First().Podkategoria)
+                var subcategories = informations
+                    .Where(r => r.Category.CategoryId == category.CategoryId)
+                    .Where(r => r.Subcategory != null)
+                    .GroupBy(r => r.Subcategory.CategoryId)
+                    .Select(r => r.First().Category)
                     .ToArray();
 
-                var subCategories = podkategorie
+                var subItems = subcategories
                     .Select(r => new Category
                     {
-                        Title = r.Nazwa,
-                        Type = r.CzyDestynacja == true ? CategoryType.SubDestination : CategoryType.General,
-                        Order = r.Kolejnosc ?? 0,
-                        Informations = GetInformations(komunikaty, kategoriaId, r.KategoriaId ?? 0),
+                        Title = r.Name,
+                        Type = r.IsDestination ? CategoryType.SubDestination : CategoryType.General,
+                        Order = r.Order,
+                        Informations = GetInformations(informations, category.CategoryId, r.CategoryId),
                     }).ToArray();
 
-                var category = new Category
+                var item = new Category
                 {
-                    Title = kategoria.Nazwa,
-                    Type = kategoria.CzyDestynacja == true ? CategoryType.Destination : CategoryType.General,
-                    Order = kategoria.Kolejnosc ?? 0,
-                    Informations = GetInformations(komunikaty, kategoriaId),
-                    SubCategories = subCategories,
+                    Title = category.Name,
+                    Type = category.IsDestination ? CategoryType.Destination : CategoryType.General,
+                    Order = category.Order,
+                    Informations = GetInformations(informations, category.CategoryId),
+                    SubCategories = subItems,
                 };
-                categories.Add(category);
+                result.Add(item);
             }
-            return categories.ToArray();
+            return result.ToArray();
         }
 
-
-        private async Task<KomunikatDoListyModel[]> ListaKomunikatow()
+        private async Task<InformationExtModel[]> GetInformations()
         {
-            var komunikatyKlient = new Client(apiUrl, _clientFactory.CreateClient());
+            var informationsClient = new Client(apiUrl, _clientFactory.CreateClient());
 
-            var komunikaty = await komunikatyKlient.KomunikatyGetAsync(tylkoAktywne: true, apiVersion);
+            var komunikaty = await informationsClient.Informations_Get_activeAsync(active: true, apiVersion);
 
             return komunikaty.ToArray();
         }
 
 
-        private Information[] GetInformations(KomunikatDoListyModel[] komunikaty, int kategoriaId, int podkategoriaId = 0)
+        private Information[] GetInformations(InformationExtModel[] informations, int categoryId, int subCategoryId = 0)
         {
-            return komunikaty
-                .Where(r => r.Kategoria.KategoriaId == kategoriaId)
-                .Where(r => (r.Podkategoria?.KategoriaId ?? 0) == podkategoriaId)
+            return informations
+                .Where(r => r.Category.CategoryId == categoryId)
+                .Where(r => (r.Subcategory?.CategoryId ?? 0) == subCategoryId)
                 .Select(r => new Information
                 {
-                    Title = r.Tytul,
-                    Url = r.LinkDoPliku,
-                    Date = r.DataDodania ?? new DateTime(2000, 1, 1),
-                    Seasons = r.SezonyId.Any() ? r.SezonyJakoTekst : string.Empty,
+                    Title = r.Title,
+                    Url = r.FileUrl,
+                    Date = r.Added,
+                    Seasons = r.SeasonIds.Any() ? r.SeasonsText : string.Empty,
                 }).ToArray();
         }
 
