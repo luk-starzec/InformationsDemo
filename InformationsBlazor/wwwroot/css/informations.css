@@ -84,6 +84,9 @@ body {
   background-color: white;
   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.1), 0 0px 12px 0 rgba(0, 0, 0, 0.1); }
 
+.category-item__wrapper {
+  margin: 5px 0; }
+
 .category-item__wrapper--newest {
   margin-bottom: 20px; }
 
@@ -129,7 +132,9 @@ body {
   margin: 3px 5px;
   padding: 0px;
   cursor: pointer;
-  color: #EEEEEE; }
+  color: #EEEEEE;
+  transition: transform ease 0.2s;
+  outline: none; }
 
 .category-header__button--collapsed {
   transform: rotate(90deg); }

@@ -1,5 +1,6 @@
 ﻿using SeasonsApi.Models;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SeasonsApi.Services
 {
@@ -11,19 +12,23 @@ namespace SeasonsApi.Services
             fakeData = InitFakeData();
         }
 
-        public SeasonModel[] GetSeasons(bool activeOnly = false)
+        public async Task<SeasonModel[]> GetSeasonsAsync(bool activeOnly = false)
         {
             var query = fakeData.Select(r => r).AsQueryable();
 
             if (activeOnly)
                 query = query.Where(r => r.IsActive);
 
-            return query.ToArray();
+            var result = query.ToArray();
+
+            return await Task.FromResult(result);
         }
 
-        public SeasonModel GetSeason(int seasonId)
+        public async Task<SeasonModel> GetSeasonAsync(int seasonId)
         {
-            return fakeData.SingleOrDefault(r => r.SeasonId == seasonId);
+            var result = fakeData.SingleOrDefault(r => r.SeasonId == seasonId);
+
+            return await Task.FromResult(result);
         }
 
 

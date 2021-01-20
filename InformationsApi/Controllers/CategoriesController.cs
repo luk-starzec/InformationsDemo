@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace InformationsApi.Controllers
 {
@@ -30,21 +31,21 @@ namespace InformationsApi.Controllers
         [HttpGet]
         //[Obsolete]
         //[MapToApiVersion("1.0")]
-        public ActionResult<IEnumerable<CategoryModel>> Get()
+        public async Task<ActionResult<IEnumerable<CategoryModel>>> Get()
         {
-            return informationsService.GetCategories();
+            return await informationsService.GetCategoriesAsync();
         }
 
         [HttpGet("{categoryId}")]
-        public ActionResult<CategoryModel> Get(int categoryId)
+        public async Task<ActionResult<CategoryModel>> Get(int categoryId)
         {
-            return informationsService.GetCategory(categoryId);
+            return await informationsService.GetCategoryAsync(categoryId);
         }
 
         [HttpPost]
-        public IActionResult Post(CategoryModel category)
+        public async Task<IActionResult> Post(CategoryModel category)
         {
-            var errors = informationsService.SaveCategory(category);
+            var errors = await informationsService.SaveCategoryAsync(category);
             if (errors.Any())
             {
                 var vpd = new ValidationProblemDetails
@@ -60,12 +61,12 @@ namespace InformationsApi.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put(IEnumerable<CategoryModel> categories)
+        public async Task<IActionResult> Put(IEnumerable<CategoryModel> categories)
         {
             if (categories.Any(r => r.CategoryId == 0))
                 return BadRequest("KategoriaId musi być większe od 0");
 
-            var errors = informationsService.SaveCategories(categories.ToArray());
+            var errors = await informationsService.SaveCategoriesAsync(categories.ToArray());
             if (errors.Any())
             {
                 var vpd = new ValidationProblemDetails
@@ -82,9 +83,9 @@ namespace InformationsApi.Controllers
         }
 
         [HttpDelete("{categoryId}")]
-        public IActionResult Delete(int categoryId)
+        public async Task<IActionResult> Delete(int categoryId)
         {
-            var errors = informationsService.DeleteCategory(categoryId);
+            var errors = await informationsService.DeleteCategoryAsync(categoryId);
             if (errors.Any())
             {
                 var vpd = new ValidationProblemDetails

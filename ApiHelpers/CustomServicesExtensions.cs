@@ -37,6 +37,7 @@ namespace ApiHelpers
                 {
                     cfg.OperationFilter<ApiVersionHeaderFilter>();
                     cfg.CustomOperationIds(apiDesc => CustomOperationIdGenerator.GetOperationId(apiDesc));
+                    cfg.UseAllOfToExtendReferenceSchemas();
                 });
 
             return services;

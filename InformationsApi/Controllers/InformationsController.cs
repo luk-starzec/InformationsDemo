@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace InformationsApi.Controllers
 {
@@ -20,28 +21,28 @@ namespace InformationsApi.Controllers
 
 
         [HttpGet]
-        public ActionResult<IEnumerable<InformationExtModel>> Get(bool active = true)
+        public async Task<ActionResult<IEnumerable<InformationExtModel>>> Get(bool activeOnly = true)
         {
-            return informationsService.GetInformations(active);
+            return await informationsService.GetInformationsAsync(activeOnly);
         }
 
         [HttpGet("newest/{fromDate}")]
-        public ActionResult<IEnumerable<InformationExtModel>> GetNajnowsze(DateTime fromDate)
+        public async Task<ActionResult<IEnumerable<InformationExtModel>>> GetNewest(DateTime fromDate)
         {
-            return informationsService.GetInformations(activeOnly: true, fromDate: fromDate);
+            return await informationsService.GetInformationsAsync(activeOnly: true, fromDate: fromDate);
         }
 
         [HttpGet("{informationId}")]
-        public ActionResult<InformationModel> Get(int informationId)
+        public async Task<ActionResult<InformationModel>> Get(int informationId)
         {
-            return informationsService.GetInformation(informationId);
+            return await informationsService.GetInformationAsync(informationId);
         }
 
 
         [HttpPost]
-        public IActionResult Post(InformationModel information)
+        public async Task<IActionResult> Post(InformationModel information)
         {
-            var errors = informationsService.SaveInformation(information);
+            var errors = await informationsService.SaveInformationAsync(information);
             if (errors.Any())
             {
                 var vpd = new ValidationProblemDetails
@@ -57,9 +58,9 @@ namespace InformationsApi.Controllers
         }
 
         [HttpDelete("{informationId}")]
-        public IActionResult Delete(int informationId)
+        public async Task<IActionResult> Delete(int informationId)
         {
-            informationsService.DeleteInformation(informationId);
+            await informationsService.DeleteInformationAsync(informationId);
             return Ok();
         }
     }

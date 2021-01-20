@@ -1,27 +1,29 @@
 ﻿using InformationsApi.Models;
 using System;
+using System.Threading.Tasks;
 
 namespace InformationsApi.Repo
 {
     public interface IInformationsRepo
     {
-        CategoryModel[] GetCategories();
-        CategoryModel[] GetCategories(int[] categoryIds);
-        CategoryModel GetCategory(int categoryId);
+        Task<CategoryModel[]> GetCategoriesAsync();
+        Task<CategoryModel[]> GetCategoriesAsync(int[] categoryIds);
+        Task<CategoryModel> GetCategoryAsync(int categoryId);
 
-        void SaveCategories(CategoryModel[] categories);
+        Task SaveCategoriesAsync(CategoryModel[] categories);
 
-        string[] CanDeleteCategory(int categoryId);
-        void DeleteCategory(int categoryId);
+        Task<string[]> CanDeleteCategoryAsync(int categoryId);
+        Task DeleteCategoryAsync(int categoryId);
 
-        InformationModel[] GetActiveInformations();
-        InformationModel[] GetInformations(bool activeOnly, DateTime? fromDate);
-        InformationModel GetInformation(int informationId);
 
-        string UploadFile(string fileUrl, byte[] data);
-        void SaveInformation(InformationModel information);
+        Task<InformationModel[]> GetActiveInformationsAsync();
+        Task<InformationModel[]> GetInformationsAsync(bool activeOnly, DateTime? fromDate);
+        Task<InformationModel> GetInformationAsync(int informationId);
 
-        void DeleteInformation(int informationId);
+        Task<string> UploadFileAsync(string fileUrl, byte[] data);
+        Task SaveInformationAsync(InformationModel information);
+
+        Task DeleteInformationAsync(int informationId);
 
     }
 }

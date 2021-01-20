@@ -18,7 +18,49 @@ namespace InformationsApi.Repo
         }
 
 
-        public string[] CanDeleteCategory(int categoryId)
+        public async Task<CategoryModel[]> GetCategoriesAsync()
+        {
+            var result = categoryModels.ToArray();
+            return await Task.FromResult(result);
+        }
+
+        public async Task<CategoryModel[]> GetCategoriesAsync(int[] categoryIds)
+        {
+            var result = categoryModels
+                  .Where(r => categoryIds.Contains(r.CategoryId))
+                  .ToArray();
+            return await Task.FromResult(result);
+        }
+
+        public async Task<CategoryModel> GetCategoryAsync(int categoryId)
+        {
+            var result = categoryModels.SingleOrDefault(r => r.CategoryId == categoryId);
+            return await Task.FromResult(result);
+        }
+
+        public async Task SaveCategoriesAsync(CategoryModel[] categories)
+        {
+            foreach (var category in categories)
+            {
+                if (category.CategoryId == 0)
+                {
+                    category.CategoryId = categoryModels.Select(r => r.CategoryId).Max() + 1;
+                    categoryModels.Add(category);
+                }
+                else
+                {
+                    var current = categoryModels.Single(r => r.CategoryId == category.CategoryId);
+
+                    current.ParentCategoryId = category.ParentCategoryId;
+                    current.Name = category.Name;
+                    current.IsDestination = category.IsDestination;
+                    current.Order = category.Order;
+                }
+            }
+            await Task.CompletedTask;
+        }
+
+        public async Task<string[]> CanDeleteCategoryAsync(int categoryId)
         {
             var errors = new List<string>();
 
@@ -38,53 +80,27 @@ namespace InformationsApi.Repo
             if (subcategoriesCount > 0)
                 errors.Add($"Do podkategorii jest przypisanych {subcategoriesCount} komunikatów");
 
-            return errors.ToArray();
+            return await Task.FromResult(errors.ToArray());
         }
 
-        public void DeleteCategory(int categoryId)
+        public async Task DeleteCategoryAsync(int categoryId)
         {
             var category = categoryModels.Single(r => r.CategoryId == categoryId);
             categoryModels.Remove(category);
+            await Task.CompletedTask;
         }
 
-        public void DeleteInformation(int informationId)
-        {
-            var information = informationModels.Single(r => r.InformationId == informationId);
-            informationModels.Remove(information);
-        }
-
-        public InformationModel[] GetActiveInformations()
+        public async Task<InformationModel[]> GetActiveInformationsAsync()
         {
             var time = DateTime.Now;
-            return informationModels
+            var result = informationModels
                 .Where(r => r.ValidFrom <= time)
                 .Where(r => r.ValidTo >= time)
                 .ToArray();
+            return await Task.FromResult(result);
         }
 
-        public CategoryModel[] GetCategories()
-        {
-            return categoryModels.ToArray();
-        }
-
-        public CategoryModel[] GetCategories(int[] categoryIds)
-        {
-            return categoryModels
-                .Where(r => categoryIds.Contains(r.CategoryId))
-                .ToArray();
-        }
-
-        public CategoryModel GetCategory(int categoryId)
-        {
-            return categoryModels.SingleOrDefault(r => r.CategoryId == categoryId);
-        }
-
-        public InformationModel GetInformation(int informationId)
-        {
-            return informationModels.SingleOrDefault(r => r.InformationId == informationId);
-        }
-
-        public InformationModel[] GetInformations(bool activeOnly, DateTime? fromDate)
+        public async Task<InformationModel[]> GetInformationsAsync(bool activeOnly, DateTime? fromDate)
         {
             var query = informationModels.AsQueryable();
 
@@ -102,31 +118,23 @@ namespace InformationsApi.Repo
                     .Where(r => r.Added >= fromDate.Value);
             }
 
-            return query.ToArray();
+            var result = query.ToArray();
+            return await Task.FromResult(result);
         }
 
-        public void SaveCategories(CategoryModel[] categories)
+        public async Task<InformationModel> GetInformationAsync(int informationId)
         {
-            foreach (var category in categories)
-            {
-                if (category.CategoryId == 0)
-                {
-                    category.CategoryId = categoryModels.Select(r => r.CategoryId).Max() + 1;
-                    categoryModels.Add(category);
-                }
-                else
-                {
-                    var current = categoryModels.Single(r => r.CategoryId == category.CategoryId);
-
-                    current.ParentCategoryId = category.ParentCategoryId;
-                    current.Name = category.Name;
-                    current.IsDestination = category.IsDestination;
-                    current.Order = category.Order;
-                }
-            }
+            var result = informationModels.SingleOrDefault(r => r.InformationId == informationId);
+            return await Task.FromResult(result);
         }
 
-        public void SaveInformation(InformationModel information)
+        public async Task<string> UploadFileAsync(string fileUrl, byte[] data)
+        {
+            var result = FakeData.GetFileUrl();
+            return await Task.FromResult(result);
+        }
+
+        public async Task SaveInformationAsync(InformationModel information)
         {
             if (information.InformationId == 0)
             {
@@ -145,11 +153,14 @@ namespace InformationsApi.Repo
                 current.ValidTo = information.ValidTo;
                 current.SeasonsId = information.SeasonsId.ToArray();
             }
+            await Task.CompletedTask;
         }
 
-        public string UploadFile(string fileUrl, byte[] data)
+        public async Task DeleteInformationAsync(int informationId)
         {
-            return FakeData.GetFileUrl();
+            var information = informationModels.Single(r => r.InformationId == informationId);
+            informationModels.Remove(information);
+            await Task.CompletedTask;
         }
     }
 }

@@ -23,7 +23,7 @@ namespace InformationsApi.Services
         {
             var seasonsClient = new Client(seasonsApiUrl, httpClient);
 
-            return seasonsClient.Seasons_Get_activeAsync(onlyActive: false, x_Version: apiVersion);
+            return seasonsClient.Seasons_Get_activeOnlyAsync(activeOnly: false, x_Version: apiVersion);
         }
     }
 }

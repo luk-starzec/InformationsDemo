@@ -54,21 +54,21 @@ namespace SeasonsApiClient
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
         /// <returns>Success</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SeasonModel>> Seasons_Get_activeAsync(bool? onlyActive, string x_Version)
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SeasonModel>> Seasons_Get_activeOnlyAsync(bool? activeOnly, string x_Version)
         {
-            return Seasons_Get_activeAsync(onlyActive, x_Version, System.Threading.CancellationToken.None);
+            return Seasons_Get_activeOnlyAsync(activeOnly, x_Version, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SeasonModel>> Seasons_Get_activeAsync(bool? active, string x_Version, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SeasonModel>> Seasons_Get_activeOnlyAsync(bool? activeOnly, string x_Version, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/seasons?");
-            if (active != null) 
+            if (activeOnly != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("active") + "=").Append(System.Uri.EscapeDataString(ConvertToString(active, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("activeOnly") + "=").Append(System.Uri.EscapeDataString(ConvertToString(activeOnly, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -136,27 +136,22 @@ namespace SeasonsApiClient
     
         /// <returns>Success</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<SeasonModel> Seasons_Get_seasonIdAsync(int? seasonId, string sezonId, string x_Version)
+        public System.Threading.Tasks.Task<SeasonModel> Seasons_Get_seasonIdAsync(int seasonId, string x_Version)
         {
-            return Seasons_Get_seasonIdAsync(seasonId, sezonId, x_Version, System.Threading.CancellationToken.None);
+            return Seasons_Get_seasonIdAsync(seasonId, x_Version, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<SeasonModel> Seasons_Get_seasonIdAsync(int? seasonId, string sezonId, string x_Version, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<SeasonModel> Seasons_Get_seasonIdAsync(int seasonId, string x_Version, System.Threading.CancellationToken cancellationToken)
         {
-            if (sezonId == null)
-                throw new System.ArgumentNullException("sezonId");
+            if (seasonId == null)
+                throw new System.ArgumentNullException("seasonId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/seasons/{sezonId}?");
-            urlBuilder_.Replace("{sezonId}", System.Uri.EscapeDataString(ConvertToString(sezonId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (seasonId != null) 
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("seasonId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(seasonId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            urlBuilder_.Length--;
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/seasons/{seasonId}");
+            urlBuilder_.Replace("{seasonId}", System.Uri.EscapeDataString(ConvertToString(seasonId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = _httpClient;
             var disposeClient_ = false;

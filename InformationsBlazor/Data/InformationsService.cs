@@ -10,8 +10,8 @@ namespace InformationsBlazor.Data
 {
     public class InformationsService
     {
-        private readonly string apiUrl = "http://zergling:8502";
-        private readonly string apiVersion = "1.1";
+        private readonly string apiUrl = "https://localhost:44392/";
+        private readonly string apiVersion = "1.0";
 
         private readonly IHttpClientFactory _clientFactory;
         public InformationsService(IHttpClientFactory clientFactory)
@@ -19,25 +19,29 @@ namespace InformationsBlazor.Data
             _clientFactory = clientFactory;
         }
 
-        public Task<NewestInformation[]> GetNewestInformationsAsync()
+        public async Task<NewestInformation[]> GetNewestInformationsAsync()
         {
-            var informations = new List<NewestInformation>();
-            for (int i = 1; i < 10; i++)
-                informations.Add(GetTestNewestInformation(i));
+            var informationsClient = new Client(apiUrl, _clientFactory.CreateClient());
 
-            informations[1].Seasons = "Lato 2020";
-            informations[1].CategoryName = "Hiszpania";
-            informations[3].Seasons = "Lato 2020, Zima 2020/21";
-            informations[3].CategoryName = "Hiszpania - Costa Brava";
+            var fromDate = DateTime.Today.AddDays(-7);
+            var models = await informationsClient.Informations_GetNewest_fromDateAsync(fromDate, apiVersion);
 
-            return Task.FromResult(informations.ToArray());
+            var informations = models
+                .Select(r => new NewestInformation
+                {
+                    Title = r.Title,
+                    CategoryName = $"{r.Category.Name}{(r.Subcategory != null ? " - " + r.Subcategory.Name : string.Empty)}",
+                    Url = r.FileUrl,
+                    Date = r.Added,
+                    Seasons = r.SeasonIds.Any() ? r.SeasonsText : string.Empty,
+                }).ToArray();
+
+            return informations;
         }
 
         public async Task<Category[]> GetCategoriesAsync()
         {
-            //return new Category[0];
-
-            var informations = await GetInformations();
+            var informations = await GetInformationExtModels();
 
             var categories = informations.GroupBy(r => r.Category.CategoryId).Select(r => r.First().Category).ToArray();
 
@@ -73,13 +77,13 @@ namespace InformationsBlazor.Data
             return result.ToArray();
         }
 
-        private async Task<InformationExtModel[]> GetInformations()
+        private async Task<InformationExtModel[]> GetInformationExtModels()
         {
             var informationsClient = new Client(apiUrl, _clientFactory.CreateClient());
 
-            var komunikaty = await informationsClient.Informations_Get_activeAsync(active: true, apiVersion);
+            var informations = await informationsClient.Informations_Get_activeOnlyAsync(activeOnly: true, apiVersion);
 
-            return komunikaty.ToArray();
+            return informations.ToArray();
         }
 
 
@@ -95,70 +99,6 @@ namespace InformationsBlazor.Data
                     Date = r.Added,
                     Seasons = r.SeasonIds.Any() ? r.SeasonsText : string.Empty,
                 }).ToArray();
-        }
-
-        public async Task<Category[]> GetCategoriesAsync2()
-        {
-            var categories = new List<Category>();
-            for (int i = 1; i < 5; i++)
-                categories.Add(GetTestCategory(i));
-            categories[2].Type = CategoryType.Destination;
-            categories[3].Type = CategoryType.Destination;
-
-            var subCategories = new List<Category>();
-            for (int i = 10; i < 12; i++)
-            {
-                var subCategory = GetTestCategory(i);
-                subCategory.Type = CategoryType.SubDestination;
-                subCategories.Add(subCategory);
-            }
-            categories[3].SubCategories = subCategories.ToArray();
-
-            return categories.ToArray();
-        }
-
-
-
-        private Information GetTestInformation(int index)
-        {
-            return new Information
-            {
-                Title = $"Testowy komunikat numer {index}",
-                Url = "https://images.r.pl/pliki/20611039321073.pdf",
-                Date = new DateTime(2020, 6, 3).AddDays(index),
-            };
-        }
-        private NewestInformation GetTestNewestInformation(int index)
-        {
-            return new NewestInformation
-            {
-                Title = $"Testowy komunikat> numer {index}",
-                Url = "https://images.r.pl/pliki/20611039321073.pdf",
-                Date = new DateTime(2020, 6, 3).AddDays(index),
-                CategoryName = "Test",
-            };
-        }
-
-        private Category GetTestCategory(int index = 1)
-        {
-            var informations = new List<Information>();
-            for (int i = 1; i < 10; i++)
-                informations.Add(GetTestInformation(i));
-
-            if (index != 1)
-            {
-                informations[1].Seasons = "Lato 2020";
-                informations[3].Seasons = "Lato 2020, Zima 2020/21";
-            }
-
-
-            return new Category
-            {
-                Title = $"Przykładowa kategoria numer {index}",
-                Type = CategoryType.General,
-                Informations = informations.ToArray(),
-                Order = index,
-            };
         }
     }
 }

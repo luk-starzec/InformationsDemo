@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace InformationsApi.Models
 {
     public class InformationExtModel
     {
         public int InformationId { get; set; }
+        [Required]
         public CategoryModel Category { get; set; }
         public CategoryModel Subcategory { get; set; }
         public string Title { get; set; }

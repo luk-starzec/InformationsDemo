@@ -123,6 +123,7 @@ body {
 }
 
 .category-item__wrapper {
+    margin: 5px 0;
 }
 
 .category-item__wrapper--newest {
@@ -188,6 +189,8 @@ body {
     padding: 0px;
     cursor: pointer;
     color: #EEEEEE;
+    transition: transform ease 0.2s;
+    outline: none;
 }
 
 .category-header__button--collapsed {

@@ -11,7 +11,5 @@ namespace InformationsBlazor.Models
         public NewestInformation(NewestInformation info)
             : base(info)
             => (CategoryName) = (info.CategoryName);
-
-
     }
 }

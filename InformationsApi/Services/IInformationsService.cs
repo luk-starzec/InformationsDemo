@@ -1,25 +1,26 @@
 ﻿using InformationsApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace InformationsApi.Services
 {
     public interface IInformationsService
     {
-        InformationExtModel[] GetInformations(bool activeOnly, DateTime? fromDate = null);
-        InformationModel GetInformation(int informationId);
+        Task<InformationExtModel[]> GetInformationsAsync(bool activeOnly, DateTime? fromDate = null);
+        Task<InformationModel> GetInformationAsync(int informationId);
 
-        string[] SaveInformation(InformationModel information);
+        Task<string[]> SaveInformationAsync(InformationModel information);
 
-        void DeleteInformation(int informationId);
+        Task DeleteInformationAsync(int informationId);
 
 
-        CategoryModel[] GetCategories();
-        CategoryModel GetCategory(int categoryId);
+        Task<CategoryModel[]> GetCategoriesAsync();
+        Task<CategoryModel> GetCategoryAsync(int categoryId);
 
-        string[] SaveCategory(CategoryModel category);
-        IDictionary<string, string[]> SaveCategories(CategoryModel[] categories);
+        Task<string[]> SaveCategoryAsync(CategoryModel category);
+        Task<IDictionary<string, string[]>> SaveCategoriesAsync(CategoryModel[] categories);
 
-        string[] DeleteCategory(int categoryId);
+        Task<string[]> DeleteCategoryAsync(int categoryId);
     }
 }

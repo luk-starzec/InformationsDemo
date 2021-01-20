@@ -1,10 +1,11 @@
 ﻿using SeasonsApi.Models;
+using System.Threading.Tasks;
 
 namespace SeasonsApi.Services
 {
     public interface ISeasonsService
     {
-        SeasonModel[] GetSeasons(bool activeOnly = false);
-        SeasonModel GetSeason(int seasonId);
+        Task<SeasonModel[]> GetSeasonsAsync(bool activeOnly = false);
+        Task<SeasonModel> GetSeasonAsync(int seasonId);
     }
 }

@@ -12,6 +12,6 @@ namespace InformationsApi.Models
         public DateTime Added { get; set; }
         public string FileUrl { get; set; }
         public byte[] File { get; set; }
-        public int[] SeasonsId { get; set; }
+        public int[] SeasonsId { get; set; } = new int[0];
     }
 }

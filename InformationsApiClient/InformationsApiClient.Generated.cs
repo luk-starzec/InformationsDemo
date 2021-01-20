@@ -141,9 +141,6 @@ namespace InformationsApiClient
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task Categories_Post_categoryAsync(string x_Version, CategoryModel body, System.Threading.CancellationToken cancellationToken)
         {
-            if (body == null)
-                throw new System.ArgumentNullException("body");
-    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/categories");
     
@@ -438,21 +435,21 @@ namespace InformationsApiClient
     
         /// <returns>Success</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<InformationExtModel>> Informations_Get_activeAsync(bool? active, string x_Version)
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<InformationExtModel>> Informations_Get_activeOnlyAsync(bool? activeOnly, string x_Version)
         {
-            return Informations_Get_activeAsync(active, x_Version, System.Threading.CancellationToken.None);
+            return Informations_Get_activeOnlyAsync(activeOnly, x_Version, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<InformationExtModel>> Informations_Get_activeAsync(bool? active, string x_Version, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<InformationExtModel>> Informations_Get_activeOnlyAsync(bool? activeOnly, string x_Version, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/informations?");
-            if (active != null) 
+            if (activeOnly != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("active") + "=").Append(System.Uri.EscapeDataString(ConvertToString(active, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("activeOnly") + "=").Append(System.Uri.EscapeDataString(ConvertToString(activeOnly, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -530,9 +527,6 @@ namespace InformationsApiClient
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task Informations_Post_informationAsync(string x_Version, InformationModel body, System.Threading.CancellationToken cancellationToken)
         {
-            if (body == null)
-                throw new System.ArgumentNullException("body");
-    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/informations");
     
@@ -597,15 +591,15 @@ namespace InformationsApiClient
     
         /// <returns>Success</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<InformationExtModel>> Informations_GetNajnowsze_fromDateAsync(System.DateTime fromDate, string x_Version)
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<InformationExtModel>> Informations_GetNewest_fromDateAsync(System.DateTime fromDate, string x_Version)
         {
-            return Informations_GetNajnowsze_fromDateAsync(fromDate, x_Version, System.Threading.CancellationToken.None);
+            return Informations_GetNewest_fromDateAsync(fromDate, x_Version, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<InformationExtModel>> Informations_GetNajnowsze_fromDateAsync(System.DateTime fromDate, string x_Version, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<InformationExtModel>> Informations_GetNewest_fromDateAsync(System.DateTime fromDate, string x_Version, System.Threading.CancellationToken cancellationToken)
         {
             if (fromDate == null)
                 throw new System.ArgumentNullException("fromDate");

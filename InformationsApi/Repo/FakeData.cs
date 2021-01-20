@@ -2,13 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace InformationsApi.Repo
 {
     public static class FakeData
     {
-        public static string GetFileUrl() => "test/test.pdf";
+        public static string GetFileUrl() => "data/test.pdf";
 
         public static CategoryModel[] GetCategories()
         {
@@ -112,7 +111,7 @@ namespace InformationsApi.Repo
             {
                 if (ci == categories.Count() - 1)
                     ci = 0;
-                var categoryId = categories[ci].CategoryId;
+                var categoryId = categories[ci++].CategoryId;
                 result.Add(GetInformation(i, categoryId));
             }
 
@@ -136,7 +135,7 @@ namespace InformationsApi.Repo
             }
             else
             {
-                result.ValidFrom = DateTime.Today.AddDays(-20 + informationId % 5);
+                result.ValidFrom = DateTime.Today.AddDays(-15 + informationId % 10);
                 result.ValidTo = result.ValidFrom.AddMonths(2);
             }
             result.Added = result.ValidFrom;
@@ -148,7 +147,7 @@ namespace InformationsApi.Repo
             else if (informationId % 6 == 0)
                 result.SeasonsId = new int[] { 12, 13 };
             else if (informationId % 8 == 0)
-                result.SeasonsId = new int[] { 10, 11, 12, 13 };
+                result.SeasonsId = new int[] { 11, 12, 13 };
 
             return result;
         }

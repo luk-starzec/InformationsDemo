@@ -2,6 +2,7 @@
 using SeasonsApi.Models;
 using SeasonsApi.Services;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SeasonsApi.Controllers
 {
@@ -17,15 +18,15 @@ namespace SeasonsApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<SeasonModel>> Get(bool active = false)
+        public async Task<ActionResult<IEnumerable<SeasonModel>>> Get(bool activeOnly = false)
         {
-            return seasonsService.GetSeasons(active);
+            return await seasonsService.GetSeasonsAsync(activeOnly);
         }
 
         [HttpGet("{seasonId}")]
-        public ActionResult<SeasonModel> Get(int seasonId)
+        public async Task<ActionResult<SeasonModel>> Get(int seasonId)
         {
-            return seasonsService.GetSeason(seasonId);
+            return await seasonsService.GetSeasonAsync(seasonId);
         }
     }
 }
