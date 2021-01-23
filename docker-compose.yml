@@ -1,0 +1,72 @@
+version: '3.4'
+
+services:
+  informationsblazor:
+    image: ${DOCKER_REGISTRY-}informationsblazor
+    build:
+      context: .
+      dockerfile: InformationsBlazor/Dockerfile
+    expose: 
+      - "80"
+      - "443"
+    ports: 
+      - "5000:80"
+      - "5001:443"
+
+  informationsapi:
+    image: ${DOCKER_REGISTRY-}informationsapi
+    build:
+      context: .
+      dockerfile: InformationsApi/Dockerfile
+    environment:
+      - SeasonsApiUrl=http://seasonsapi
+      - ElasticUrl=http://elasticsearch:9200/
+    expose: 
+      - "80"
+    ports: 
+      - "5011:80"
+
+  sezonyapi:
+    image: ${DOCKER_REGISTRY-}seasonsapi
+    build:
+      context: .
+      dockerfile: SeasonsApi/Dockerfile
+    environment:
+      - ElasticUrl=http://elasticsearch:9200/
+    expose: 
+      - "80"
+    ports: 
+      - "5012:80"
+
+  healthchecksmonitoring:
+    image: ${DOCKER_REGISTRY-}healthchecksmonitoring
+    build:
+      context: .
+      dockerfile: HealthChecksMonitoring/Dockerfile
+    environment:
+     - Endpoints={"Informations API":"http://informationsapi/hc","Saesons API":"http://seasonsapi/hc","Informations Blazor":"http://informationsblazor/hc"}
+    expose: 
+     - "80"
+    ports:
+     - "5051:80"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    container_name: elasticsearch
+    environment:
+     - discovery.type=single-node
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.2
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+volumes:
+  elasticsearch-data:

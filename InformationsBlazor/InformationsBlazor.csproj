@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <UserSecretsId>3bd20561-6735-401d-8daf-7e8aa49672e4</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="3.1.2" />
     <PackageReference Include="BuildWebCompiler" Version="1.12.405" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
   </ItemGroup>

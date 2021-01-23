@@ -10,7 +10,8 @@ namespace InformationsBlazor.Data
 {
     public class InformationsService
     {
-        private readonly string apiUrl = "https://localhost:44392/";
+        //private readonly string apiUrl = "https://localhost:44392/";
+        private readonly string apiUrl = "http://informationsapi/";
         private readonly string apiVersion = "1.0";
 
         private readonly IHttpClientFactory _clientFactory;

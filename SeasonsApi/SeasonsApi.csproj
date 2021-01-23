@@ -2,11 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>8ae38111-b788-47b5-a51b-671b8ba0ae25</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
   </ItemGroup>
 
   <ItemGroup>

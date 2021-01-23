@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Exceptions;
+using Serilog.Sinks.Elasticsearch;
 using System;
 
 namespace InformationsApi
@@ -32,7 +33,6 @@ namespace InformationsApi
             services.AddControllers();
 
             var seasonsApiUrl = Environment.GetEnvironmentVariable("SeasonsApiUrl");
-            seasonsApiUrl = "https://localhost:44362/";
             services
                 .AddSingleton<ISeasonsService, SeasonsService>(s => new SeasonsService(seasonsApiUrl))
                 .AddSingleton<IInformationsRepo, InformationsRepo>()
@@ -53,7 +53,7 @@ namespace InformationsApi
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -78,7 +78,7 @@ namespace InformationsApi
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .Enrich.WithExceptionDetails()
-                //.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUrl)) { AutoRegisterTemplate = true, })
+                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUrl)) { AutoRegisterTemplate = true, })
                 .CreateLogger();
         }
     }
