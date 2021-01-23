@@ -53,7 +53,7 @@ namespace InformationsBlazor.Data
                     .Where(r => r.Category.CategoryId == category.CategoryId)
                     .Where(r => r.Subcategory != null)
                     .GroupBy(r => r.Subcategory.CategoryId)
-                    .Select(r => r.First().Category)
+                    .Select(r => r.First().Subcategory)
                     .ToArray();
 
                 var subItems = subcategories
